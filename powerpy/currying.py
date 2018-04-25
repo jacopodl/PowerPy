@@ -1,0 +1,13 @@
+class Currying(object):
+    def __init__(self, fun):
+        self.fun = fun
+        self.argc = fun.__code__.co_argcount
+        self.argl = ()
+
+    def __call__(self, *args):
+        tmp = self.argl + args
+        if len(tmp) >= self.argc:
+            return self.fun(*tmp)
+        curr = Currying(self.fun)
+        curr.argl = tmp
+        return curr
