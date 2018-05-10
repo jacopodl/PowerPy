@@ -1,6 +1,6 @@
 import unittest
 
-from powerpy.raw import *
+from powerpy.raw.cstruct import *
 
 DOS_MAGIC = 0x4D5A
 DOS_CIGAM = 0x5A4D

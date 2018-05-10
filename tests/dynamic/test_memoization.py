@@ -1,7 +1,7 @@
 import time
 import unittest
 
-from powerpy.dynamic import memoize, clear
+from powerpy.dynamic.memoization import memoize, clear
 
 
 @memoize
