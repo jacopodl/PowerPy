@@ -1,6 +1,6 @@
 import unittest
 
-from powerpy.pattern.singleton import Singleton, SingletonMeta
+from powerpy.pattern.creational.singleton import Singleton, SingletonMeta
 
 
 @Singleton

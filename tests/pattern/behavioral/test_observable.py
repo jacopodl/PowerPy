@@ -1,6 +1,6 @@
 import unittest
 
-from powerpy.pattern.observable import Observer, Observable
+from powerpy.pattern.behavioral.observable import Observer, Observable
 
 
 class Manager(Observable):

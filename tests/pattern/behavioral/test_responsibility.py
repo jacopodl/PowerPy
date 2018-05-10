@@ -1,6 +1,6 @@
 import unittest
 
-from powerpy.pattern.responsibility import Handler
+from powerpy.pattern.behavioral.responsibility import Handler
 
 
 class Under(Handler):

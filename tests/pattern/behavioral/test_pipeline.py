@@ -1,6 +1,6 @@
 import unittest
 
-from powerpy.pattern.pipeline import Pipeline, Pipe
+from powerpy.pattern.behavioral.pipeline import Pipeline, Pipe
 
 
 class SplitDot(Pipe):
@@ -23,7 +23,7 @@ class AppendInAddr(Pipe):
         return obj + ".in-addr.arpa"
 
 
-class TestObservable(unittest.TestCase):
+class TestPipeLine(unittest.TestCase):
     def test_pipeline(self):
         p = Pipeline()
         s = SplitDot()
