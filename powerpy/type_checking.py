@@ -9,24 +9,26 @@ def isobject(obj):
 
 
 class EnsureTypes(object):
-    def __setattr__(self, key, value):
-        __tperr = "property '%s' requiring type %s but received type %s instead"
+    def __setattr__(self, key, rvalue):
         if key in self.__dict__:
-            lvalue = getattr(self, key)
-            lvalue = self.__get_savedtype(key) if lvalue is None else lvalue
-            if lvalue is not None:
+            lvalue = self.__get_savedtype(key)
+            if lvalue is None:
+                self.__savetype(key, None)
+            else:
                 if isclass(lvalue):
-                    if value is not None:
-                        if not isinstance(value, lvalue):
-                            raise TypeError(__tperr % (key, lvalue, type(value)))
+                    if rvalue is not None:
+                        if not isinstance(rvalue, lvalue):
+                            raise TypeError("property '%s' required instance of class '%s' but received type %s " %
+                                            (key, lvalue.__qualname__, type(rvalue)))
                     else:
                         self.__savetype(key, lvalue)
-                elif type(lvalue) != type(value):
-                    if value is not None or not isobject(lvalue):
-                        raise TypeError(__tperr % (key, type(lvalue), type(value)))
+                elif type(lvalue) != type(rvalue):
+                    if rvalue is not None or not isobject(lvalue):
+                        raise TypeError("property '%s' required type '%s' but received type %s " %
+                                        (key, type(lvalue), type(rvalue)))
                     else:
                         self.__savetype(key, type(lvalue))
-        object.__setattr__(self, key, value)
+        object.__setattr__(self, key, rvalue)
 
     def __delattr__(self, item):
         object.__delattr__(self, item)
@@ -36,11 +38,11 @@ class EnsureTypes(object):
         type_db = getattr(self, "__saved_types__", dict())
         if key not in type_db:
             type_db[key] = obj
-        setattr(self, "__saved_types__", type_db)
+            object.__setattr__(self, "__saved_types__", type_db)
 
     def __get_savedtype(self, key):
         type_db = getattr(self, "__saved_types__", dict())
-        return None if key not in type_db else type_db[key]
+        return getattr(self, key) if key not in type_db else type_db[key]
 
     def __del_savedtype(self, key):
         type_db = getattr(self, "__saved_types__", dict())
