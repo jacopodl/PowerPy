@@ -19,6 +19,16 @@ DOUBLE = 'd'
 VOIDPTR = 'P'
 
 
+def _parse_endianness(endianness):
+    if endianness == "big":
+        endianness = '>'
+    elif endianness == "little":
+        endianness = '<'
+    elif endianness != '>' and endianness != '<' and endianness != '!' and endianness != '@':
+        raise ValueError("invalid argument, endianness must be one of these: @, little(<), big(>, !)")
+    return endianness
+
+
 class CStruct(type):
     def __prepare__(self, name):
         # Little Hack :D
@@ -74,8 +84,8 @@ class CStruct(type):
         return package
 
     @staticmethod
-    def unpack_from_io(cls, stream: io.RawIOBase):
-        cls.unpack(stream.read(cls.__size__))
+    def unpack_from_io(cls, stream: io.RawIOBase, endianness=None):
+        cls.unpack(stream.read(cls.__size__), endianness)
 
     @staticmethod
     def set_endianness(cls, endianness):
@@ -85,13 +95,7 @@ class CStruct(type):
     def __parse_endianness(cls, endianness=None):
         if endianness is None:
             return cls.__endianness__
-        if endianness == "big":
-            endianness = '>'
-        elif endianness == "little":
-            endianness = '<'
-        elif endianness != '>' and endianness != '<' and endianness != '!' and endianness != '@':
-            raise ValueError("invalid argument, endianness must be one of these: @, little(<), big(>, !)")
-        return endianness
+        return _parse_endianness(endianness)
 
     @staticmethod
     def unpack(cls, data, endianness=None):
@@ -107,3 +111,13 @@ class CStruct(type):
                 cursor += size
             except struct.error as err:
                 raise struct.error("field %s: %s" % (key, err))
+
+
+def unpack_type(dtype, data, endianness=None):
+    if endianness is not None:
+        dtype = _parse_endianness(endianness) + dtype
+    return struct.unpack(dtype, data)[0]
+
+
+def sizeof_type(dtype):
+    return struct.calcsize(dtype)
