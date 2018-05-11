@@ -32,9 +32,9 @@ class TestMemoization(unittest.TestCase):
         self.assertFalse(simple.__closure__[0].cell_contents.__cache__)
         simple(24, "J")
         simple(27, "A")
-        self.assertEqual(simple.__closure__[0].cell_contents.__cache__[((24, 'J'), ())], "J" * 24)
-        self.assertEqual(simple.__closure__[0].cell_contents.__cache__[((27, 'A'), ())], "A" * 27)
+        self.assertEqual(simple.__closure__[0].cell_contents.__cache__["24J"], "J" * 24)
+        self.assertEqual(simple.__closure__[0].cell_contents.__cache__["27A"], "A" * 27)
         clear(simple, 27, "A")
-        self.assertEqual(simple.__closure__[0].cell_contents.__cache__[((24, 'J'), ())], "J" * 24)
+        self.assertEqual(simple.__closure__[0].cell_contents.__cache__["24J"], "J" * 24)
         with self.assertRaises(KeyError):
-            _ = simple.__closure__[0].cell_contents.__cache__[((27, 'A'), ())]
+            _ = simple.__closure__[0].cell_contents.__cache__["27a"]
