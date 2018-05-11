@@ -33,7 +33,7 @@ class Observable:
             synchronize_ensure(self)
             if not self.changed:
                 return
-            alocal = self.observers
+            alocal = list(self.observers)
             self.changed = False
         finally:
             synchronize_release(self)

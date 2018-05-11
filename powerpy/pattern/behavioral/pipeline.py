@@ -23,7 +23,7 @@ class Pipeline:
     def execute(self, obj):
         try:
             synchronize_ensure(self)
-            pipes = self.pipeline
+            pipes = list(self.pipeline)
         finally:
             synchronize_release(self)
         data = obj
