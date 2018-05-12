@@ -29,7 +29,7 @@ def _parse_endianness(endianness):
     return endianness
 
 
-class CStruct(type):
+class CStructMeta(type):
     def __prepare__(self, name):
         # Little Hack :D
         # Before python 3.6(PEP 520), namespace is initialised as an empty dict,
@@ -53,20 +53,20 @@ class CStruct(type):
             fmt += value
 
         # Special property and methods
-        dct["__bytes__"] = CStruct.to_bytes
-        dct["__parse_endianness"] = CStruct.__parse_endianness
+        dct["__bytes__"] = CStructMeta.to_bytes
+        dct["__parse_endianness"] = CStructMeta.__parse_endianness
         dct["__structure__"] = __structure__
         dct["__size__"] = struct.calcsize(fmt)
-        dct["pack"] = CStruct.pack
-        dct["set_endianness"] = CStruct.set_endianness
-        dct["unpack"] = CStruct.unpack
-        dct["unpack_from_io"] = CStruct.unpack_from_io
+        dct["pack"] = CStructMeta.pack
+        dct["set_endianness"] = CStructMeta.set_endianness
+        dct["unpack"] = CStructMeta.unpack
+        dct["unpack_from_io"] = CStructMeta.unpack_from_io
 
         if "__endianness__" not in dct:
             dct["__endianness__"] = '@'
 
         ist = type.__new__(mcs, name, bases, dct)
-        ist.__endianness__ = CStruct.__parse_endianness(ist, ist.__endianness__)
+        ist.__endianness__ = CStructMeta.__parse_endianness(ist, ist.__endianness__)
         return ist
 
     @staticmethod
@@ -77,7 +77,7 @@ class CStruct(type):
     def pack(cls, endianness=None):
         structure = getattr(cls, "__structure__")
         package = bytearray()
-        endianness = CStruct.__parse_endianness(cls, endianness)
+        endianness = CStructMeta.__parse_endianness(cls, endianness)
         for key, value in structure.items():
             fmt = endianness + value
             package += struct.pack(fmt, getattr(cls, key))
@@ -89,7 +89,7 @@ class CStruct(type):
 
     @staticmethod
     def set_endianness(cls, endianness):
-        cls.__endianness__ = CStruct.__parse_endianness(cls, endianness)
+        cls.__endianness__ = CStructMeta.__parse_endianness(cls, endianness)
 
     @staticmethod
     def __parse_endianness(cls, endianness=None):
@@ -101,7 +101,7 @@ class CStruct(type):
     def unpack(cls, data, endianness=None):
         structure = getattr(cls, "__structure__")
         cursor = 0
-        endianness = CStruct.__parse_endianness(cls, endianness)
+        endianness = CStructMeta.__parse_endianness(cls, endianness)
         for key in structure:
             fmt = endianness + structure[key]
             try:

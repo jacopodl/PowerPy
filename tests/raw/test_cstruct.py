@@ -9,7 +9,7 @@ DOS_HEADER = b'MZ\x90\x00\x03\x00\x00\x00\x04\x00\x00\x00\xff\xff\x00\x00\xb8\x0
              b'\x00\x00\x00\x00\x00\x00\x00\x00\xf8\x00\x00\x00'
 
 
-class DosHeaderParser(metaclass=CStruct):
+class DosHeaderParser(metaclass=CStructMeta):
     e_magic = USHORT  # 00: MZ Header signature
     e_cblp = USHORT  # 02: Bytes on last page of file
     e_cp = USHORT  # 04: Pages in file
@@ -31,13 +31,13 @@ class DosHeaderParser(metaclass=CStruct):
     e_lfanew = "I"  # 3c: Offset to extended header
 
 
-class TestCStruct(unittest.TestCase):
+class TestCStructMeta(unittest.TestCase):
     def setUp(self):
         endianness = struct.unpack("H", DOS_HEADER[0:2])[0]
         self.header = DosHeaderParser()
         self.header.set_endianness('big' if endianness == DOS_MAGIC else 'little')
 
-    def test_cstruct_base(self):
+    def test_CStructMeta_base(self):
         self.header.unpack(DOS_HEADER)
         self.assertTrue(self.header.e_magic == DOS_MAGIC or self.header.e_magic == DOS_CIGAM)
         self.assertEqual(self.header.e_cblp, 144)
@@ -45,7 +45,7 @@ class TestCStruct(unittest.TestCase):
         self.assertEqual(self.header.e_maxalloc, 65535)
         self.assertEqual(self.header.e_lfanew, 248)
 
-    def test_cstruct_packer(self):
+    def test_CStructMeta_packer(self):
         self.header.unpack(DOS_HEADER)
         bytez = bytes(self.header)
         self.assertEqual(bytez, DOS_HEADER)
