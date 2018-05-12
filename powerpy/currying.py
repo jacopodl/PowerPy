@@ -11,3 +11,9 @@ class Currying(object):
         curr = Currying(self.fun)
         curr.argl = tmp
         return curr
+
+
+def uncurrying(obj):
+    if not isinstance(obj, Currying):
+        raise TypeError("obj must be a function decorated with @Currying")
+    return obj.fun
