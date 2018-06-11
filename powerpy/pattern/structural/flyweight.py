@@ -14,3 +14,9 @@ class Flyweight:
             obj = self.clazz(*args, **kwargs)
             self.ref[key] = obj
         return self.ref[key]
+
+    def __getattr__(self, item):
+        return getattr(self.clazz, item)
+
+    def __instancecheck__(self, instance):
+        return isinstance(instance, self.clazz)

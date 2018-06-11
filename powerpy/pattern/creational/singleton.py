@@ -18,4 +18,11 @@ class Singleton:
     def __call__(self, *args, **kwargs):
         if self.instance is None:
             self.instance = self.clazz(*args, **kwargs)
+            self.instance.__class__ = self.clazz
         return self.instance
+
+    def __getattr__(self, item):
+        return getattr(self.clazz, item)
+
+    def __instancecheck__(self, instance):
+        return isinstance(instance, self.clazz)

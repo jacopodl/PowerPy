@@ -11,7 +11,14 @@ class Single1:
 
 @Singleton
 class Single2:
-    pass
+    myprop = "Single2PROP"
+
+    @staticmethod
+    def decorate_prop():
+        return "***%s***" % Single2.myprop
+
+    def inst_prop(self):
+        return Single2.decorate_prop()
 
 
 class SingleMeta1(metaclass=SingletonMeta):
@@ -34,6 +41,17 @@ class TestSingleton(unittest.TestCase):
         s1 = Single1()
         s2 = Single2()
         self.assertNotEqual(s1, s2)
+
+    def test_class_checks(self):
+        s1 = Single1()
+        s2 = Single2()
+        self.assertTrue(isinstance(s1, Single1))
+        self.assertFalse(isinstance(s2, Single1))
+
+    def test_statics(self):
+        s1 = Single2()
+        s1.inst_prop()
+        self.assertEqual(s1.inst_prop(), "***%s***" % Single2.myprop)
 
 
 class TestSingletonMeta(unittest.TestCase):
