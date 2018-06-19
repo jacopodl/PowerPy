@@ -1,3 +1,5 @@
+![CodeFactor](https://www.codefactor.io/repository/github/jacopodl/powerpy/badge)
+
 # PowerPy
 Powerpy is a collection of small functions and classes for Python3, contains an implementation of common patterns and other simple functions to make your life a bit easier.
 
